@@ -1,4 +1,4 @@
-import orders from './orders'
+// import orders from './orders'
 import axios from 'axios';
 import { url, ordersRoute } from './urlProvider';
 
@@ -14,12 +14,17 @@ type Order {
   items: Product[] + size + amount!
 }
 */
+
+let fetched = false;
+let orders;
+
 async function fetchOrders() {
+  if(fetched) return orders;
   const config = {
     headers: { Authorization: `Bearer ${window.localStorage.getItem('jwt')}` },
   };
   const res = await axios.get(url + ordersRoute, config);
-  const orders = res.data.data.orders;
+   orders = res.data.data.orders;
   for(let i = 0; i < orders.length; i++){
     let total = 0;
     for(let j = 0; j < orders[i].items.length; j++){
@@ -27,11 +32,10 @@ async function fetchOrders() {
     }
     orders[i].total = total;
   }
-
-  console.log('orders: ', orders);
+  fetched = true;
   return orders; 
 }
 
 export {
-  fetchOrders, orders as staticOrders
+  fetchOrders
 }

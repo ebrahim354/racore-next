@@ -19,16 +19,20 @@ type Product {
 }
 */
 
+let fetched = false;
+let products;
+
 const fetchInventory = async () => {
+    if(fetched) return products;
     const res = await axios.get(
         url + productsRoute
     );
-    const products = res.data.data.products;
+    products = res.data.data.products;
     for(let i = 0; i < products.length; i++){
       // just for now.
       products[i].categories = ['T-shirts'];
     }
-    console.log(products);
+    fetched = true;
     return products; 
 }; 
 
